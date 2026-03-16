@@ -1,0 +1,36 @@
+{
+    "name": "Sterownik CWU",
+    "version": 1,
+    "sensors": [
+        {
+            "index": 1,
+            "sensorid": "",
+            "type": "DS18B20",
+            "name": "Zbiornik góra"
+        },
+        {
+            "index": 2,
+            "sensorid": "",
+            "type": "DS18B20",
+            "name": "Zbiornik środek"
+        },
+        {
+            "index": 3,
+            "sensorid": "",
+            "type": "DS18B20",
+            "name": "Zbiornik dół"
+        },
+        {
+            "index": 4,
+            "sensorid": "",
+            "type": "DS18B20",
+            "name": "Kocioł góra"
+        },
+        {
+            "index": 5,
+            "sensorid": "",
+            "type": "DS18B20",
+            "name": "Kocioł dół"
+        }
+    ]
+}
