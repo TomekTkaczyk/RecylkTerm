@@ -13,6 +13,8 @@ GPIOExpander::GPIOExpander(uint8_t address, uint8_t interruptPin, EventBus &even
 
 void GPIOExpander::begin(const uint8_t *inputs, uint8_t inputCount, const uint8_t *outputs, uint8_t outputCount)
 {
+    Serial.println("Initialization PCF...");
+
     this->inputs = inputs;
     this->inputCount = inputCount;
     this->outputs = outputs;

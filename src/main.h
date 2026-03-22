@@ -4,8 +4,10 @@
 #if __has_include("wifi_credentials.h")
 #include "wifi_credentials.h"
 #else
-#define WIFI_SSID "moja_siec" // <-- tu wpisz nazwę swojej sieci WiFi
-#define WIFI_PASSWORD "moje_haslo" // <-- tu wpisz hasło do swojej sieci WiFi
+#define WIFI_SSID "wifi_ssid" 
+#define WIFI_PASSWORD "wifi_password" 
+#define OTA_NAME "ota_name"
+#define OTA_PASSWORD "ota_password"
 #endif
 
 #define SERIAL_BAUD_RATE 115200

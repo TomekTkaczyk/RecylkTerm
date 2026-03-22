@@ -9,7 +9,7 @@ GPIOExpander gpioExpander(EXPANDER_ADDRESS, I2C_INTERRUPT_PIN, eventBus);
 Display display(&Wire, eventBus);
 Menu menu(eventBus);
 WebServer webserver(dataModule);
-OTA ota("esp-thermo");
+OTA ota;
 
 void setup()
 {
@@ -19,28 +19,32 @@ void setup()
     Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN);
     Wire.setClock(100000);
     i2cScanner.begin();
-    
-    Serial.println("initialization PCF...");
     gpioExpander.begin(inputPins, sizeof(inputPins), outputPins, sizeof(outputPins));
-    
+    display.begin();
     dataModule.begin();
     temperature.begin();
-    display.begin();
     display.displayLog(F("Connecting to WiFi..."));
     webserver.begin(WIFI_SSID, WIFI_PASSWORD);
-    display.displayLog(F("WiFi connected."));
-    ota.begin();
-    display.displayLog(F("OTA ready."));
-    display.displayLog(F("IP: ") + WiFi.localIP().toString());
+    if(WiFi.status() == WL_CONNECTED)
+    {
+        display.displayLog(F("WiFi connected."));
+        display.displayLog(F("IP: ") + WiFi.localIP().toString());
+        ota.begin(OTA_NAME, OTA_PASSWORD);
+    }
+    else 
+    {
+        display.displayLog(F("WiFi unavailable."));
+    }
     menu.begin(&mainMenu[0]);
 }
 
 void loop()
 {
     timeSynchronize();
-    ota.handle();
     webserver.handleClient();
+    ota.handle();
     temperature.update();
     gpioExpander.update();
+    menu.update();
     eventBus.update();
 }

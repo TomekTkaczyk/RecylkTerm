@@ -27,8 +27,6 @@ void Menu::begin(MenuItem *rootMenu)
 
 void Menu::update()
 {
-    if (current->onDraw)
-        current->onDraw(*current);
 }
 
 void Menu::handleOnButtonEvent(ButtonEvent e)
@@ -39,18 +37,23 @@ void Menu::handleOnButtonEvent(ButtonEvent e)
     switch (e.pin)
     {
     case 0: // LEFT
+        Serial.println("Left");
         left();
         break;
     case 1: // RIGHT
+        Serial.println("Right");
         right();
         break;
     case 2: // OK / BACK
+        Serial.println("Ok");
         enter();
         break;
     case 3: // UP
+        Serial.println("Up");
         up();
         break;
     case 4: // DOWN
+        Serial.println("Down");
         down();
         break;
     }

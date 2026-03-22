@@ -1,26 +1,29 @@
-
 #include "webserver.h"
-#include "./infrastructure/time/time.h"
-
-
 
 void WebServer::begin(const char *ssid, const char *password)
 {
+    long int now = millis();
+
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
 
     Serial.print(F("Connecting to "));
     Serial.print(ssid);
 
-    while (WiFi.status() != WL_CONNECTED)
+    while (WiFi.status() != WL_CONNECTED && millis() - now < 10000) //
     {
         delay(500);
         Serial.print(F("."));
     }
-    Serial.println();
-    Serial.println(F("WiFi connected."));
 
-    // używamy lambdy do wywołania metody klasy
+    if (WiFi.status() != WL_CONNECTED)
+    {
+        Serial.println(F(" not connected."));
+        return;
+    }
+    Serial.println();
+
+    // lambda expression to call a class method
     server.on("/", [this]()
               { this->handleRoot(); });
     server.on("/temperatures", [this]()
@@ -28,25 +31,12 @@ void WebServer::begin(const char *ssid, const char *password)
 
     server.begin();
     Serial.println(F("Serwer HTTP up and running."));
-
-    ArduinoOTA.setHostname("esp-thermo");
-    ArduinoOTA.onStart([]()
-                       { Serial.println(F("Start OTA")); });
-
-    ArduinoOTA.onEnd([]()
-                     { Serial.println(F("\nEnd OTA")); });
-
-    ArduinoOTA.onProgress([](unsigned int progress, unsigned int total)
-                          { Serial.printf("Progress: %u%%\r", (progress * 100) / total); });
-
-    ArduinoOTA.onError([](ota_error_t error)
-                       { Serial.printf("Error[%u]: ", error); });
-
-    ArduinoOTA.begin();
 }
 
 void WebServer::handleClient()
 {
+    if (WiFi.status() != WL_CONNECTED)
+        return;
     server.handleClient();
 }
 

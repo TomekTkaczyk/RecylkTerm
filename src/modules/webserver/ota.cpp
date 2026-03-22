@@ -1,33 +1,39 @@
 #include "ota.h"
 
-void OTA::begin()
+void OTA::begin(const char *hostname, const char *password)
 {
-    ArduinoOTA.setHostname(_hostname);
+    if (!MDNS.begin(hostname))
+    {
+        Serial.println("mDNS initialization error.");
+        return;
+    }
 
-    ArduinoOTA.onStart([]() {
-        Serial.println(F("OTA Start"));
-    });
+    ArduinoOTA.setHostname(hostname);
+    ArduinoOTA.setPassword(password);
 
-    ArduinoOTA.onEnd([]() {
-        Serial.println(F("\nOTA End"));
-    });
+    ArduinoOTA.onStart([]()
+                       { Serial.println(F("OTA Start")); });
 
-    ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-        Serial.printf("OTA Progress: %u%%\r", (progress * 100) / total);
-    });
+    ArduinoOTA.onEnd([]()
+                     { Serial.println(F("\nOTA End")); });
 
-    ArduinoOTA.onError([](ota_error_t error) {
-        Serial.printf("OTA Error[%u]\n", error);
-    });
+    ArduinoOTA.onProgress([](unsigned int progress, unsigned int total)
+                          { Serial.printf("OTA Progress: %u%%\r", (progress * 100) / total); });
+
+    ArduinoOTA.onError([](ota_error_t error)
+                       { Serial.printf("OTA Error[%u]\n", error); });
 
     ArduinoOTA.begin();
 
-    Serial.println(F("OTA Ready"));
-    Serial.print(F("IP address: "));
-    Serial.println(WiFi.localIP());
+    Serial.println(F("OTA up and running"));
+    Serial.print(F("OTA name: "));
+    Serial.print(hostname);
+    Serial.println(F(".local"));
 }
 
 void OTA::handle()
 {
+    if (WiFi.status() != WL_CONNECTED)
+        return;
     ArduinoOTA.handle();
 }
